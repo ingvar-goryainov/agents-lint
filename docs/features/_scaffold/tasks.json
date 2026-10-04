@@ -1,0 +1,50 @@
+{
+  "slug": "_scaffold",
+  "tasks": [
+    {
+      "id": "S1",
+      "title": "Create the Go module, folder structure and cobra entry point with a version command",
+      "layer": "scaffold",
+      "deps": [],
+      "acs": [],
+      "dod": "`go build ./...` succeeds; `go run ./cmd/agents-lint version` prints the version and exits 0; `internal/rules` holds the Rule/Finding/Severity types and an empty explicit registry; exit codes 0/1/2 defined in internal/cli/exit.go",
+      "files_hint": ["go.mod", "cmd/agents-lint/main.go", "internal/cli/root.go", "internal/cli/version.go", "internal/cli/exit.go", "internal/rules/rule.go", "internal/rules/registry.go"]
+    },
+    {
+      "id": "S2",
+      "title": "Wire the test harness: table-driven unit test + testscript CLI smoke test",
+      "layer": "scaffold",
+      "deps": ["S1"],
+      "acs": [],
+      "dod": "`go test -race ./...` runs green; the testscript smoke test `version.txtar` builds and boots the binary and asserts exit 0 + version output; a unit test covers the empty rule registry",
+      "files_hint": ["internal/cli/cli_test.go", "internal/cli/testdata/script/version.txtar", "internal/rules/registry_test.go"]
+    },
+    {
+      "id": "S3",
+      "title": "Set up lint tooling and Makefile (replaces the migration task — no datastore per ADR-0003)",
+      "layer": "scaffold",
+      "deps": ["S1"],
+      "acs": [],
+      "dod": "`golangci-lint run ./...` passes with the v2 config; `make build`, `make test`, `make lint` run the map's build_cmd/test_cmd/lint_cmd and succeed",
+      "files_hint": [".golangci.yml", "Makefile"]
+    },
+    {
+      "id": "S4",
+      "title": "Add the GitHub Actions CI workflow (build + test -race + golangci-lint)",
+      "layer": "scaffold",
+      "deps": ["S2", "S3"],
+      "acs": [],
+      "dod": "workflow YAML is valid; its steps use exactly the map's build_cmd, test_cmd and lint_cmd on Go 1.26; runs on push and pull_request",
+      "files_hint": [".github/workflows/ci.yml"]
+    },
+    {
+      "id": "S5",
+      "title": "Write CLAUDE.md and a README stub from the foundation conventions",
+      "layer": "scaffold",
+      "deps": ["S1"],
+      "acs": [],
+      "dod": "CLAUDE.md states the build/test/lint commands, the package layout, the rule-purity + explicit-registry rules, error/exit-code conventions and golden-test workflow, consistent with docs/architecture-map.md; README describes what the tool is and how to build it",
+      "files_hint": ["CLAUDE.md", "README.md"]
+    }
+  ]
+}
