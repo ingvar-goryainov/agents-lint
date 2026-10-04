@@ -1,0 +1,8 @@
+# Smoke test: the binary boots, prints its version and exits 0.
+exec agents-lint version
+stdout '^agents-lint \S+\n$'
+! stderr .
+
+# Unknown subcommands fail with a usage error.
+! exec agents-lint no-such-command
+stderr 'unknown command'
